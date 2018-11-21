@@ -4,66 +4,68 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Danh Sách Sản Phẩm</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    <input type="text" placeholder="Search..">
+    <a href="@Url.Action("Create")" class="btn btn-primary">Thêm sản phẩm</a>
 </p>
-<table class="table">
+<table class="table table-bordered table-hover">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.MaSP)
+            Mã sản phẩm
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.TenSP)
+            Tên sản phẩm
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.GiaBan)
+            Giá bán
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.GiaGoc)
+            Giá gốc
+        </th>
+        <th>Giá góp
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.GiaGop)
+            Số lượng tồn
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.SoLuongTon)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.LoaiSanPham.TenLoai)
+            Tên loại
         </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.MaSP)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TenSP)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.GiaBan)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.GiaGoc)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.GiaGop)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.SoLuongTon)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.LoaiSanPham.TenLoai)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.id })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaSP)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TenSP)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GiaBan)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GiaGoc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GiaGop)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SoLuongTon)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LoaiSanPham.TenLoai)
+            </td>
+            <td>
+                <a href="DMQuetTien/Edit?id=item.id" class="btn btn-success">Sửa</a>
+                <a href="DMQuetTien/Details?id=item.id" class="btn btn-warning">Xem</a>
+                <a href="DMQuetTien/Delete?id=item.id" class="btn btn-danger">Xóa</a>
+                
+            </td>
+        </tr>
+    }
 
 </table>
