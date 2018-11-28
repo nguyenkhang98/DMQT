@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using DMQuetTien.Models;
+using System.Transactions;
 
 namespace DMQuetTien.Controllers
 {
@@ -48,19 +49,43 @@ namespace DMQuetTien.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include="id,MaSP,TenSP,Loai_id,GiaBan,GiaGoc,GiaGop,SoLuongTon")] BangSanPham bangsanpham)
+        public ActionResult Create(BangSanPham model)
         {
+            CheckBangSanPham(model);
+
+
             if (ModelState.IsValid)
-            {
-                db.BangSanPhams.Add(bangsanpham);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+                using (var scope = new TransactionScope())
+                {
+                    db.BangSanPhams.Add(model);
+                    db.SaveChanges();
 
-            ViewBag.Loai_id = new SelectList(db.LoaiSanPhams, "id", "TenLoai", bangsanpham.Loai_id);
-            return View(bangsanpham);
+                    var path = Server.MapPath("~/App_Data");
+                    path = path + "/" + model.id;
+                    if (Request.Files["HinhAnh"] != null &&
+                        Request.Files["HinhAnh"].ContentLength > 0)
+                    {
+                        Request.Files["HinhAnh"].SaveAs(path);
+
+                        scope.Complete(); //approve for transaction
+                        return RedirectToAction("Index");
+                    }
+                    else
+                        ModelState.AddModelError("HinhAnh", "Chưa có hình sản phẩm");
+                }
+                        ViewBag.Loai_id = new SelectList(db.LoaiSanPhams, "id", "TenLoai", model.Loai_id);
+                    return View(model);
+                
         }
-
+        private void CheckBangSanPham(BangSanPham model)
+        {
+            if (model.GiaGoc < 0)
+                ModelState.AddModelError("GiaGoc", "Giá gốc phải lớn hơn 0");
+            if (model.GiaGop < 0)
+                ModelState.AddModelError("GiaGop", "Giá góp phải lớn hơn giá bán");
+            if (model.GiaBan < 0)
+                ModelState.AddModelError("GiaBan", "Giá bán phải lớn hơn giá gốc");
+        }      
         // GET: /BangSanPham/Edit/5
         public ActionResult Edit(int? id)
         {
